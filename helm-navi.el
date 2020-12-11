@@ -115,23 +115,27 @@ is ever a performance issue on slow machines, you can."
 
 ;;;;; Support functions
 
+;; BUG: Issue with helm-navi in last MELPA package
+;; https://github.com/emacs-helm/helm-navi/pull/3
+;; These functions needs to be redefined and:
+;;  Search and replace of: outline-promotion-headings -> outshine-promotion-headings
 (defun helm-navi--get-candidates-in-buffer (buffer &optional regexp)
   "Return Outshine heading candidates in BUFFER.
 Optional argument REGEXP is a regular expression to match, a
 function to return a regular expression, or
-`outline-promotion-headings' by default."
+`outshine-promotion-headings' by default."
   ;; Much of this code is copied from helm-org.el
   (with-current-buffer buffer
     ;; Make sure outshine is loaded
-    (unless outline-promotion-headings
-      (error "Outshine is not activated in buffer \"%s\".  Activate `outline-minor-mode', or consult Outshine's documentation for further instructions if necessary." (buffer-name buffer)))
+    (unless outshine-promotion-headings
+      (error "Outshine is not activated in buffer \"%s\".  Activate `outline-minor-mode', or consult Outshine's documentation for further instructions if necessary" (buffer-name buffer)))
     (let* ((heading-regexp (pcase regexp
                              ((pred functionp) (funcall regexp))
                              ((pred stringp) regexp)
                              ((pred null) (concat "^\\("
                                                   (mapconcat (lambda (s)
                                                                (s-trim (car s)))
-                                                             outline-promotion-headings
+                                                             outshine-promotion-headings
                                                              "\\|")
                                                   "\\)"
                                                   "\s+\\(.*\\)$"))))
@@ -191,7 +195,7 @@ Typically for preselecting in Helm buffer."
                             :ALL)
            (mapconcat (lambda (s)
                         (s-trim (car s)))
-                      outline-promotion-headings
+                      outshine-promotion-headings
                       "\\|"))
           ".*$"))
 
